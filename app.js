@@ -23,8 +23,9 @@ function pause(s,release=false){
   s.status.textContent='';
 }
 function activate(s){
-  if(activeGroup&&activeGroup!==s)pause(activeGroup,true);
-  activeGroup=s;
+  const previous=activeGroup;
+  if(previous&&previous!==s)pause(previous,true);
+  activeGroup=s;previous?.update();s.update();
 }
 function visibleFraction(s){
   if(s.el.hidden)return 0;
@@ -36,8 +37,8 @@ function selectVisible(){
   for(const s of states.values())s.visible=visibleFraction(s)>=.45;
   const next=activeGroup?.visible?activeGroup:[...states.values()].filter(s=>s.visible).sort((a,b)=>visibleFraction(b)-visibleFraction(a))[0];
   if(next!==activeGroup){
-    if(activeGroup)pause(activeGroup,true);
-    activeGroup=next||null;
+    const previous=activeGroup;if(previous)pause(previous,true);
+    activeGroup=next||null;previous?.update();next?.update();
     if(next&&!next.paused)play(next);
   }
 }
@@ -87,9 +88,9 @@ function mount(g){
   el.append(head,grid,status,details);document.getElementById(containers[g.section]).append(el);
   videos.forEach(v=>window.enactphysPoster(v));
   const s={el,grid,videos,status,toggle,token:0,paused:reduceMotion,visible:false};states.set(el,s);
-  const update=()=>{toggle.textContent=s.paused?'Play':'Pause';toggle.setAttribute('aria-pressed',String(!s.paused));};update();
+  const update=()=>{const playing=activeGroup===s&&!s.paused;toggle.textContent=playing?'Pause':'Play';toggle.setAttribute('aria-pressed',String(playing));};s.update=update;update();
   replay.addEventListener('click',()=>{s.paused=false;update();play(s,true);});
-  toggle.addEventListener('click',()=>{s.paused=!s.paused;update();s.paused?pause(s):play(s);});
+  toggle.addEventListener('click',()=>{s.paused=activeGroup===s&&!s.paused;s.paused?pause(s):play(s);update();});
   videos.forEach(v=>v.addEventListener('play',()=>{activate(s);s.paused=false;update();}));
   videos[0].addEventListener('ended',()=>{if(activeGroup===s&&s.visible&&!s.paused&&!document.hidden)play(s,true);});
   return el;
