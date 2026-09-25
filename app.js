@@ -14,58 +14,79 @@ const posterObserver=new IntersectionObserver(entries=>{
   for(const e of entries)if(e.isIntersecting){const v=e.target;v.poster=v.dataset.poster;posterObserver.unobserve(v);}
 },{rootMargin:'180px'});
 window.enactphysPoster=v=>posterObserver.observe(v);
-let activeGroup=null,selectionTimer;
+let selectionTimer;
 function pause(s,release=false){
-  s.token++;s.controller?.abort();s.videos.forEach(v=>{
+  s.token++;s.controller?.abort();s.mode='idle';
+  s.videos.forEach(v=>{
     v.pause();
     if(release&&v.getAttribute('src')&&v.readyState<4){v.removeAttribute('src');v.load();}
   });
-  s.status.textContent='';
-}
-function activate(s){
-  const previous=activeGroup;
-  if(previous&&previous!==s)pause(previous,true);
-  activeGroup=s;previous?.update();s.update();
+  s.status.textContent='';s.update();
 }
 function visibleFraction(s){
   if(s.el.hidden)return 0;
-  const r=s.grid.getBoundingClientRect(),top=88;
+  const r=s.grid.getBoundingClientRect(),top=64;
   return Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,top))/Math.min(r.height,innerHeight-top);
 }
 function selectVisible(){
-  if(document.hidden)return;
-  for(const s of states.values())s.visible=visibleFraction(s)>=.45;
-  const next=activeGroup?.visible?activeGroup:[...states.values()].filter(s=>s.visible).sort((a,b)=>visibleFraction(b)-visibleFraction(a))[0];
-  if(next!==activeGroup){
-    const previous=activeGroup;if(previous)pause(previous,true);
-    activeGroup=next||null;previous?.update();next?.update();
-    if(next&&!next.paused)play(next);
+  for(const s of states.values()){
+    const visible=!document.hidden&&visibleFraction(s)>.1;
+    const entered=visible&&!s.visible;s.visible=visible;
+    if(!visible){if(s.mode==='loading'||s.mode==='playing')pause(s,true);}
+    else if(!s.paused&&(entered||s.mode==='idle'))play(s);
   }
 }
-function scheduleSelection(){clearTimeout(selectionTimer);selectionTimer=setTimeout(selectVisible,100);}
-
-function loaded(v,signal){
-  if(v.readyState>=3)return Promise.resolve();
+function scheduleSelection(){clearTimeout(selectionTimer);selectionTimer=setTimeout(selectVisible,80);}
+function prepare(s){
+  if(s.el.hidden||document.hidden)return;
+  s.videos.forEach(v=>{if(!v.getAttribute('src')){v.preload='auto';v.src=v.dataset.src;v.load();}});
+}
+const preparation=new IntersectionObserver(entries=>{
+  for(const e of entries){const s=states.get(e.target);if(e.isIntersecting)prepare(s);else if(!s.visible&&s.mode==='idle')pause(s,true);}
+},{rootMargin:'180px'});
+function mediaReady(v,signal){
+  if(signal.aborted)return Promise.reject(new DOMException('Cancelled','AbortError'));
+  if(v.readyState>=4)return Promise.resolve();
   return new Promise((resolve,reject)=>{
-    const finish=(err)=>{clearTimeout(timer);v.removeEventListener('canplay',ready);v.removeEventListener('error',fail);signal.removeEventListener('abort',cancel);err?reject(err):resolve();};
-    const ready=()=>finish();const fail=()=>finish(new Error('Video unavailable'));const cancel=()=>finish(new DOMException('Playback cancelled','AbortError'));
-    const timer=setTimeout(()=>finish(new Error('Loading timed out')),20000);
-    v.addEventListener('canplay',ready,{once:true});v.addEventListener('error',fail,{once:true});signal.addEventListener('abort',cancel,{once:true});
-    if(!v.getAttribute('src')){v.src=v.dataset.src;v.load();}
+    const events=['canplaythrough','progress','loadeddata'];
+    const finish=err=>{clearTimeout(timer);events.forEach(e=>v.removeEventListener(e,check));v.removeEventListener('error',fail);signal.removeEventListener('abort',cancel);err?reject(err):resolve();};
+    const check=()=>{if(v.readyState>=4)finish();};
+    const fail=()=>finish(new Error('Video unavailable'));
+    const cancel=()=>finish(new DOMException('Cancelled','AbortError'));
+    const timer=setTimeout(()=>finish(new Error('Loading timed out')),60000);
+    events.forEach(e=>v.addEventListener(e,check));v.addEventListener('error',fail,{once:true});signal.addEventListener('abort',cancel,{once:true});
+    check();
+  });
+}
+function seek(v,time,signal){
+  if(signal.aborted)return Promise.reject(new DOMException('Cancelled','AbortError'));
+  if(Math.abs(v.currentTime-time)<.005&&!v.seeking)return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const finish=err=>{clearTimeout(timer);v.removeEventListener('seeked',done);signal.removeEventListener('abort',cancel);err?reject(err):resolve();};
+    const done=()=>finish();const cancel=()=>finish(new DOMException('Cancelled','AbortError'));
+    const timer=setTimeout(()=>finish(new Error('Seek timed out')),10000);
+    v.addEventListener('seeked',done,{once:true});signal.addEventListener('abort',cancel,{once:true});v.currentTime=time;
   });
 }
 async function play(s,restart=false){
-  activate(s);s.controller?.abort();s.controller=new AbortController();
-  const token=++s.token;s.status.textContent='Loading…';
+  if(s.mode==='loading'&&!restart)return;
+  pause(s);s.mode='loading';s.controller=new AbortController();
+  const token=s.token,signal=s.controller.signal;s.status.textContent='Loading comparison…';s.update();
+  prepare(s);
   try{
-    await Promise.all(s.videos.map(v=>loaded(v,s.controller.signal)));
+    await Promise.all(s.videos.map(v=>mediaReady(v,signal)));
     if(token!==s.token||s.el.hidden||document.hidden)return;
-    if(restart)await Promise.all(s.videos.map(v=>new Promise(resolve=>{if(v.currentTime<.01){resolve();return;}v.addEventListener('seeked',()=>resolve(),{once:true});v.currentTime=0;})));
+    const time=restart||s.videos.some(v=>v.ended)?0:Math.min(...s.videos.map(v=>v.currentTime));
+    await Promise.all(s.videos.map(v=>seek(v,time,signal)));
     if(token!==s.token||s.el.hidden||document.hidden)return;
     await Promise.all(s.videos.map(v=>v.play()));
-    if(token!==s.token||activeGroup!==s||document.hidden){s.videos.forEach(v=>v.pause());return;}
-    s.status.textContent='';
-  }catch(e){if(token===s.token)s.status.textContent='Press Replay to load and play this group.';}
+    if(token!==s.token)return;
+    s.mode='playing';s.status.textContent='';s.update();
+  }catch(e){
+    if(token!==s.token)return;
+    pause(s);s.mode='error';
+    s.status.textContent=e.name==='NotAllowedError'?'Tap Play to start this comparison.':'This comparison is still loading. Press Replay to retry.';s.update();
+  }
 }
 function mount(g){
   const el=document.createElement('article');el.className='group';el.id=g.id;
@@ -78,7 +99,7 @@ function mount(g){
   const grid=document.createElement('div');grid.className='clips'+((g.clips.length===2||g.clips.length===4)?' two':g.clips.length===5?' five':'');
   const videos=g.clips.map(c=>{
     const fig=document.createElement('figure');fig.className='clip';
-    const v=document.createElement('video');v.dataset.src=c.src;v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
+    const v=document.createElement('video');v.dataset.src=c.src;v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
     const cap=document.createElement('figcaption');const level=document.createElement('span');level.textContent=c.label;const value=document.createElement('span');value.textContent=parameterLabel(c);cap.append(level,value);
     fig.append(v,cap);grid.append(fig);return v;
   });
@@ -87,20 +108,27 @@ function mount(g){
   info.textContent=g.clips.map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');details.append(summary,info);
   el.append(head,grid,status,details);document.getElementById(containers[g.section]).append(el);
   videos.forEach(v=>window.enactphysPoster(v));
-  const s={el,grid,videos,status,toggle,token:0,paused:reduceMotion,visible:false};states.set(el,s);
-  const update=()=>{const playing=activeGroup===s&&!s.paused;toggle.textContent=playing?'Pause':'Play';toggle.setAttribute('aria-pressed',String(playing));};s.update=update;update();
+  const s={el,grid,videos,status,toggle,token:0,paused:reduceMotion,visible:false,mode:'idle'};states.set(el,s);
+  const update=()=>{const playing=(s.mode==='playing'||s.mode==='loading')&&!s.paused;toggle.textContent=playing?'Pause':'Play';toggle.setAttribute('aria-pressed',String(playing));};s.update=update;update();
   replay.addEventListener('click',()=>{s.paused=false;update();play(s,true);});
-  toggle.addEventListener('click',()=>{s.paused=activeGroup===s&&!s.paused;s.paused?pause(s):play(s);update();});
-  videos.forEach(v=>v.addEventListener('play',()=>{activate(s);s.paused=false;update();}));
-  videos[0].addEventListener('ended',()=>{if(activeGroup===s&&s.visible&&!s.paused&&!document.hidden)play(s,true);});
+  toggle.addEventListener('click',()=>{s.paused=s.mode==='playing'||s.mode==='loading';s.paused?pause(s):play(s);update();});
+  videos.forEach(v=>{
+    v.addEventListener('play',()=>{
+      if(s.mode==='idle'||s.mode==='error'){s.paused=false;play(s);}
+    });
+    v.addEventListener('ended',()=>{
+      if(s.visible&&!s.paused&&!document.hidden&&s.videos.every(x=>x.ended))play(s,true);
+    });
+    v.addEventListener('waiting',()=>{if(s.mode==='playing'&&s.visible&&!s.paused)play(s);});
+  });
   return el;
 }
-groups.forEach(mount);
+groups.forEach(g=>preparation.observe(mount(g)));
 addEventListener('scroll',scheduleSelection,{passive:true});
 addEventListener('resize',scheduleSelection);
 scheduleSelection();
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){if(activeGroup)pause(activeGroup,true);activeGroup=null;}
+  if(document.hidden){states.forEach(s=>{s.visible=false;pause(s,true);});}
   else scheduleSelection();
 });
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{

@@ -3,7 +3,7 @@ for (const item of window.ENACTPHYS_STATES) {
   const panel=document.createElement('article');panel.className='state-panel';
   const h=document.createElement('h3');h.textContent=item.kind==='embedding'?'Additional state analysis · t-SNE':item.title;
   const layout=document.createElement('div');layout.className='state-layout';
-  const v=document.createElement('video');v.dataset.src=item.src;v.dataset.poster=item.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.controls=true;v.preload='none';v.setAttribute('aria-label',item.title);
+  const v=document.createElement('video');v.dataset.src=item.src;v.dataset.poster=item.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.controls=true;v.preload='none';v.setAttribute('aria-label',item.title);
   const graph=document.createElement('div');graph.className='state-graph';const canvas=document.createElement('canvas');canvas.width=850;canvas.height=290;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',item.kind==='embedding'?'Twelve saved t-SNE coordinates, with the state nearest the current video frame highlighted.':'All 512 saved object-state components across video time.');
   const label=document.createElement('p');label.className='state-time';graph.append(canvas,label);layout.append(v,graph);
   const detail=document.createElement('details');detail.className='settings';const summary=document.createElement('summary');summary.textContent='Visualization details';const p=document.createElement('p');
@@ -29,5 +29,16 @@ for (const item of window.ENACTPHYS_STATES) {
     label.textContent=`Frame ${frame} · ${v.currentTime.toFixed(2)} s${item.kind==='embedding'?' · state '+(ix+1):' · 512 components'}`;
   }
   v.addEventListener('timeupdate',draw);v.addEventListener('seeked',draw);v.addEventListener('loadeddata',draw);draw();
-  const observer=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting&&!v.getAttribute('src')){v.src=v.dataset.src;v.load();}if(!e.isIntersecting){v.pause();if(v.getAttribute('src')&&v.readyState<4){v.removeAttribute('src');v.load();}}}},{rootMargin:'150px'});observer.observe(panel);
+  const prepare=new IntersectionObserver(entries=>{for(const e of entries){
+    if(e.isIntersecting&&!v.getAttribute('src')){v.preload='auto';v.src=v.dataset.src;v.load();}
+  }},{rootMargin:'180px'});prepare.observe(panel);
+  let visible=false;
+  const playback=new IntersectionObserver(entries=>{for(const e of entries){
+    visible=e.isIntersecting&&e.intersectionRatio>.1;
+    if(visible&&!document.hidden&&!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});
+    else v.pause();
+  }},{threshold:[0,.1]});playback.observe(v);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)v.pause();else if(visible&&!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});
+  });
 }
