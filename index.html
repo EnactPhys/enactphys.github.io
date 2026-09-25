@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="EnactPhys: Executing Evolving Physical Processes in Video Diffusion.">
+<meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
+<title>EnactPhys — Executing Evolving Physical Processes in Video Diffusion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="theme.css">
+<script defer src="examples.js"></script><script defer src="app.js"></script><script defer src="state_data.js"></script><script defer src="states.js"></script>
+</head>
+<body>
+<a class="skip" href="#showcase">Skip to results</a>
+<div id="top"></div>
+<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#showcase">Human motion</a><a href="#fine">Physical control</a><a href="#states">Object states</a><a href="#composition">Compositions</a><a href="#gallery">More results</a><a href="#joint">Joint control</a><a href="#approach">Method</a></nav></div></div>
+
+<header class="paper-header">
+<h1><span>EnactPhys</span>: Executing Evolving Physical<br class="wide"> Processes in Video Diffusion</h1>
+<p class="authors">Anonymous Authors</p>
+<div class="resource-buttons" aria-label="Research resources">
+<a href="https://github.com/EnactPhys/EnactPhys" target="_blank" rel="noopener noreferrer" aria-label="EnactPhys GitHub repository"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18"/></svg><span>GitHub<small>Code repository</small></span></a>
+<button disabled aria-label="Hugging Face, coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 9 5v10l-9 5-9-5V7zM3 7l9 5 9-5M12 12v10"/></svg><span>Hugging Face<small>Coming soon</small></span></button>
+</div>
+<p class="tagline">Controlling how objects move, interact, and evolve through physical parameters.</p>
+
+</header>
+<main>
+<section id="showcase" class="section showcase">
+<p class="section-kicker">01 / Human motion</p>
+<h2>Physical control in human motion</h2>
+<p class="section-intro">Vary gravity, friction, or restitution while keeping the scene fixed.</p>
+<div id="featured-groups"></div>
+</section>
+<section id="fine" class="section">
+<p class="section-kicker">02 / Parameter sweeps</p><h2>Fine-grained physical control</h2><p class="section-intro">A five-level gravity sweep in the same scene.</p><div id="fine-groups"></div></section>
+<section id="composition" class="section tinted">
+<p class="section-kicker">03 / Composed events</p>
+<h2>Composing physical events</h2>
+<p class="section-intro">Departure, fall, and rebound in one video. Restitution varies while force and gravity remain fixed.</p>
+<div id="composition-groups"></div>
+</section>
+<section id="gallery" class="section">
+<p class="section-kicker">04 / Visual gallery</p>
+<h2>Physical control across objects and scenes</h2>
+<p class="section-intro">Sliding, pushing, falling, projectile motion, and collisions. Each row compares three control levels.</p>
+<div class="filters" role="group" aria-label="Filter scenes"><button data-filter="all" aria-pressed="true">All scenes</button><button data-filter="slide" aria-pressed="false">Sliding</button><button data-filter="push" aria-pressed="false">Pushing</button><button data-filter="drop" aria-pressed="false">Falling</button><button data-filter="projectile" aria-pressed="false">Projectile motion</button><button data-filter="collision" aria-pressed="false">Collisions</button></div>
+<div id="appendix-groups"></div>
+</section>
+<section id="joint" class="section tinted">
+<p class="section-kicker">05 / Joint control</p>
+<h2>More controls and parameter combinations</h2>
+<p class="section-intro">Explore additional force, restitution, and paired parameter settings.</p>
+<div id="joint-groups"></div><div id="additional-groups"></div>
+</section>
+<section id="states" class="section">
+<p class="section-kicker">06 / State analysis</p><h2>Video and object states over time</h2><p class="section-intro">Generated videos paired with the saved 512-dimensional object states.</p><div id="state-panels"></div></section>
+<section id="approach" class="section approach">
+<p class="section-kicker">07 / Method</p>
+<h2>Modeling evolving object states</h2>
+<p>EnactPhys introduces persistent object states into video diffusion. Physical conditions guide temporal state updates, while interactions couple the evolving states of different objects. These states guide the generated video over time.</p>
+<div class="method-steps"><div><strong>Physical conditions</strong><p>Object-level parameters</p></div><span aria-hidden="true">→</span><div><strong>Evolving object states</strong><p>Temporal updates and interactions</p></div><span aria-hidden="true">→</span><div><strong>Video generation</strong><p>State-conditioned motion</p></div></div>
+</section>
+<p class="selection-note">Selected qualitative examples. Videos play at their recorded frame rates. <a href="examples.json" download>Example settings</a></p>
+</main>
+<footer><a href="#top">EnactPhys ↑</a><span>Anonymous research project</span></footer>
+<noscript><p>Enable JavaScript to view the galleries. Video paths and settings are available in <a href="examples.json">examples.json</a>.</p></noscript>
+</body></html>
