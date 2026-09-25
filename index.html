@@ -7,11 +7,13 @@
 <title>EnactPhys — Executing Evolving Physical Processes in Video Diffusion</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="theme.css">
 <script defer src="examples.js"></script><script defer src="app.js?v=4"></script><script defer src="state_data.js"></script><script defer src="states.js?v=4"></script>
+<link rel="stylesheet" href="comparison.css?v=1">
+<script defer src="comparison.js?v=1"></script>
 </head>
 <body>
 <a class="skip" href="#showcase">Skip to results</a>
 <div id="top"></div>
-<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#showcase">Human motion</a><a href="#fine">Physical control</a><a href="#states">Object states</a><a href="#composition">Compositions</a><a href="#gallery">More results</a><a href="#joint">Joint control</a><a href="#approach">Method</a></nav></div></div>
+<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#showcase">Human motion</a><a href="#fine">Physical control</a><a href="#comparison">Comparisons</a><a href="#states">Object states</a><a href="#composition">Compositions</a><a href="#gallery">More results</a><a href="#joint">Joint control</a><a href="#approach">Method</a></nav></div></div>
 
 <header class="paper-header">
 <h1><span>EnactPhys</span>: Executing Evolving Physical<br class="wide"> Processes in Video Diffusion</h1>
@@ -32,29 +34,40 @@
 </section>
 <section id="fine" class="section">
 <p class="section-kicker">02 / Parameter sweeps</p><h2>Fine-grained physical control</h2><p class="section-intro">A five-level gravity sweep in the same scene.</p><div id="fine-groups"></div></section>
+<section id="comparison" class="section">
+<p class="section-kicker">03 / Baseline comparison</p>
+<h2>Physical control across five parameter settings</h2>
+<p class="section-intro">Compare EnactPhys, Phantom, ControlNet, and Text-only under matched scenes, requested parameter values, and seeds. Each method retains its benchmark inference settings.</p>
+<div class="comparison-tabs" role="group" aria-label="Select a physical parameter"></div>
+<div class="comparison-card"><h3 id="comparison-title">Friction μ</h3><p id="comparison-note">Compare motion along the ramp across five friction settings.</p>
+<video id="comparison-player" controls muted loop playsinline preload="none" poster="assets/comparison/mu_poster.jpg" aria-label="Synchronized five-level comparison of four models"></video>
+<div class="comparison-toolbar"><button id="comparison-replay" type="button">↻ Replay</button><button id="comparison-still" type="button">View comparison frame</button><a id="comparison-download" href="assets/comparison/mu_original_speed_comparison.mp4" target="_blank" rel="noopener">Open video ↗</a></div>
+<p class="comparison-caption">Rows: EnactPhys, Phantom, ControlNet, and Text-only. Columns: five parameter settings. Full 49-frame sequences at their recorded 16 fps.</p></div>
+<details class="comparison-figure"><summary>View the five-parameter comparison figure</summary><p>Markers indicate observed positions at a shared time within each panel. Connecting lines guide comparisons across settings; they are not temporal trajectories. The force panel uses a shared enlarged crop. Force and mass include closely spaced responses.</p><a href="assets/comparison/comparison_figure.png" target="_blank" rel="noopener"><img src="assets/comparison/comparison_figure.png" loading="lazy" alt="Five-parameter, five-level comparison of EnactPhys and three baselines"></a></details>
+</section>
 <section id="composition" class="section tinted">
-<p class="section-kicker">03 / Composed events</p>
+<p class="section-kicker">04 / Composed events</p>
 <h2>Composing physical events</h2>
 <p class="section-intro">Departure, fall, and rebound in one video. Restitution varies while force and gravity remain fixed.</p>
 <div id="composition-groups"></div>
 </section>
 <section id="gallery" class="section">
-<p class="section-kicker">04 / Visual gallery</p>
+<p class="section-kicker">05 / Visual gallery</p>
 <h2>Physical control across objects and scenes</h2>
 <p class="section-intro">Sliding, pushing, falling, projectile motion, and collisions. Each row compares three control levels.</p>
 <div class="filters" role="group" aria-label="Filter scenes"><button data-filter="all" aria-pressed="true">All scenes</button><button data-filter="slide" aria-pressed="false">Sliding</button><button data-filter="push" aria-pressed="false">Pushing</button><button data-filter="drop" aria-pressed="false">Falling</button><button data-filter="projectile" aria-pressed="false">Projectile motion</button><button data-filter="collision" aria-pressed="false">Collisions</button></div>
 <div id="appendix-groups"></div>
 </section>
 <section id="joint" class="section tinted">
-<p class="section-kicker">05 / Joint control</p>
+<p class="section-kicker">06 / Joint control</p>
 <h2>More controls and parameter combinations</h2>
 <p class="section-intro">Explore additional force, restitution, and paired parameter settings.</p>
 <div id="joint-groups"></div><div id="additional-groups"></div>
 </section>
 <section id="states" class="section">
-<p class="section-kicker">06 / State analysis</p><h2>Video and object states over time</h2><p class="section-intro">Generated videos paired with the saved 512-dimensional object states.</p><div id="state-panels"></div></section>
+<p class="section-kicker">07 / State analysis</p><h2>Video and object states over time</h2><p class="section-intro">Generated videos paired with the saved 512-dimensional object states.</p><div id="state-panels"></div></section>
 <section id="approach" class="section approach">
-<p class="section-kicker">07 / Method</p>
+<p class="section-kicker">08 / Method</p>
 <h2>Modeling evolving object states</h2>
 <p>EnactPhys introduces persistent object states into video diffusion. Physical conditions guide temporal state updates, while interactions couple the evolving states of different objects. These states guide the generated video over time.</p>
 <div class="method-steps"><div><strong>Physical conditions</strong><p>Object-level parameters</p></div><span aria-hidden="true">→</span><div><strong>Evolving object states</strong><p>Temporal updates and interactions</p></div><span aria-hidden="true">→</span><div><strong>Video generation</strong><p>State-conditioned motion</p></div></div>
