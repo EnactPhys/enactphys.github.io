@@ -1,6 +1,6 @@
 'use strict';
 // Show one matched scene at a time; every accepted example remains selectable.
-for (const id of ['featured-groups','fine-groups','joint-groups','additional-groups','appendix-groups']) {
+for (const id of ['featured-groups','fine-groups','joint-groups','additional-groups']) {
   const container=document.getElementById(id);
   if(!container)continue;
   const items=[...container.children].filter(el=>el.matches('.group'));

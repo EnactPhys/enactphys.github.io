@@ -5,15 +5,15 @@
 <meta name="description" content="EnactPhys: Executing Evolving Physical Processes in Video Diffusion.">
 <meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
 <title>EnactPhys — Executing Evolving Physical Processes in Video Diffusion</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="theme.css?v=5">
-<script defer src="examples.js?v=2"></script><script defer src="app.js?v=8"></script><script defer src="galleries.js?v=1"></script>
+<link rel="stylesheet" href="assets/fonts/fonts.css"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="theme.css?v=6">
+<script defer src="examples.js?v=2"></script><script defer src="app.js?v=9"></script><script defer src="galleries.js?v=2"></script>
 <link rel="stylesheet" href="comparison.css?v=1">
-<script defer src="comparison.js?v=2"></script>
+<script defer src="comparison.js?v=3"></script>
 </head>
 <body>
 <a class="skip" href="#showcase">Skip to results</a>
 <div id="top"></div>
-<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#approach">Method</a><a href="#showcase">Generalization</a><a href="#fine">Physical Control</a><a href="#joint">Joint Control</a><a href="#comparison">Comparisons</a><a href="#gallery">More Demos</a></nav></div></div>
+<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#showcase">Generalization</a><a href="#approach">Method</a><a href="#fine">Parameter Sweeps</a><a href="#joint">Joint Control</a><a href="#comparison">Comparisons</a><a href="#gallery">Visual Gallery</a></nav></div></div>
 
 <header class="paper-header">
 <h1><span>EnactPhys</span><span class="title-description">Executing Evolving Physical Processes<br class="wide"> in Video Diffusion</span></h1>
@@ -25,14 +25,6 @@
 </div>
 </header>
 <main>
-<section id="approach" class="section approach">
-<h2>How EnactPhys Works</h2>
-<figure class="paper-figure architecture-figure"><a href="assets/figures/architecture.png" target="_blank" rel="noopener" aria-label="Open the full-resolution architecture figure"><img src="assets/figures/architecture.png" width="2600" height="1491" decoding="async" alt="EnactPhys architecture: latent object states evolve under physical parameters and interact; Reader and Writer exchange information with video features."></a></figure>
-<div class="method-grid">
-<article><h3>Object State Modeling</h3><p>Maintain a sequence of latent states for each object, built from object-specific video features.</p></article>
-<article><h3>Object State Evolution</h3><p>Force, gravity, and mass guide temporal updates. Friction and restitution guide inter-object interactions.</p></article>
-<article><h3>Video–State Exchange</h3><p>The Reader updates states from video features. The Writer sends the evolved states back to guide video denoising.</p></article>
-</div></section>
 <section id="showcase" class="section showcase">
 
 <h2>Generalization</h2>
@@ -40,8 +32,16 @@
 
 <div id="featured-groups"></div>
 </section>
+<section id="approach" class="section approach">
+<h2>Method</h2>
+<figure class="paper-figure architecture-figure"><a href="assets/figures/architecture.png" target="_blank" rel="noopener" aria-label="Open the full-resolution architecture figure"><img src="assets/figures/architecture.png" width="2600" height="1491" decoding="async" alt="EnactPhys architecture: latent object states evolve under physical parameters and interact; Reader and Writer exchange information with video features."></a></figure>
+<div class="method-grid">
+<article><h3>Object State Modeling</h3><p>Maintain a sequence of latent states for each object, built from object-specific video features.</p></article>
+<article><h3>Object State Evolution</h3><p>Force, gravity, and mass guide temporal updates. Friction and restitution guide inter-object interactions.</p></article>
+<article><h3>Video–State Exchange</h3><p>The Reader updates states from video features. The Writer sends the evolved states back to guide video denoising.</p></article>
+</div></section>
 <section id="fine" class="section">
-<h2>Fine-Grained Physical Control</h2><div id="fine-groups"></div>
+<h2>Parameter Sweeps</h2><div id="fine-groups"></div>
 
 </section>
 <section id="joint" class="section tinted">
@@ -61,22 +61,19 @@
 <h2>Baseline Comparisons</h2>
 
 <div class="comparison-tabs" role="group" aria-label="Select a physical parameter"></div>
-<div class="comparison-card"><h3 id="comparison-title">Friction μ</h3><p id="comparison-note">Compare motion along the ramp across five friction settings.</p>
+<div class="comparison-card"><h3 id="comparison-title">Friction μ</h3>
 <video id="comparison-player" controls muted loop playsinline preload="none" data-poster="assets/comparison/mu_poster.jpg" aria-label="Synchronized five-level comparison of four models"></video>
 <div class="comparison-toolbar"><button id="comparison-replay" type="button">↻ Replay</button><button id="comparison-still" type="button">View comparison frame</button><a id="comparison-download" href="assets/comparison/mu_original_speed_comparison.mp4" target="_blank" rel="noopener">Open video ↗</a></div>
-<p class="comparison-caption">Rows: EnactPhys, Phantom, ControlNet, and Text-only. Columns: five parameter settings. Full 49-frame sequences at their recorded 16 fps.</p></div>
-<details class="comparison-figure"><summary>View the five-parameter comparison figure</summary><p>Markers indicate observed positions at a shared time within each panel. Connecting lines guide comparisons across settings; they are not temporal trajectories. The force panel uses a shared enlarged crop. Force and mass include closely spaced responses.</p><a href="assets/comparison/comparison_figure.png" target="_blank" rel="noopener"><img src="assets/comparison/comparison_figure.png" loading="lazy" alt="Five-parameter, five-level comparison of EnactPhys and three baselines"></a></details>
+</div>
+<details class="comparison-figure"><summary>Comparison details &amp; figure</summary><p>Rows: EnactPhys, Phantom, ControlNet, and Text-only. Columns: five parameter settings. Full 49-frame sequences at their recorded 16 fps.</p><p>Markers indicate observed positions at a shared time within each panel. Connecting lines guide comparisons across settings; they are not temporal trajectories. The force panel uses a shared enlarged crop. Force and mass include closely spaced responses.</p><a href="assets/comparison/comparison_figure.png" target="_blank" rel="noopener"><img src="assets/comparison/comparison_figure.png" loading="lazy" alt="Five-parameter, five-level comparison of EnactPhys and three baselines"></a></details>
 </section>
 <section id="gallery" class="section">
 
-<h2>More Physical Control</h2>
+<h2>Visual Gallery</h2>
 
 <div class="filters" role="group" aria-label="Filter scenes"><button data-filter="all" aria-pressed="true">All scenes</button><button data-filter="slide" aria-pressed="false">Sliding</button><button data-filter="push" aria-pressed="false">Pushing</button><button data-filter="drop" aria-pressed="false">Falling</button><button data-filter="projectile" aria-pressed="false">Projectile motion</button><button data-filter="collision" aria-pressed="false">Collisions</button></div>
 <div id="appendix-groups"></div>
 </section>
-<section id="states" class="section">
-<h2>Inside the Object States</h2><div id="state-panels"></div></section>
-<p class="selection-note">Selected examples · Full video sequences · Compressed web previews<br><a href="examples.json" download>Prompts, parameters &amp; original videos</a></p>
 </main>
 <footer><a href="#top">EnactPhys ↑</a><span>Anonymous research project</span></footer>
 <noscript><p>Enable JavaScript to view the galleries. Video paths and settings are available in <a href="examples.json">examples.json</a>.</p></noscript>

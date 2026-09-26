@@ -1,6 +1,6 @@
 'use strict';
 window.enactphysMedia = src => src.replace(/^assets\/(paper|states)\//, 'assets/stream/$1/');
-const groups = window.ENACTPHYS_EXAMPLES.groups;
+const groups = window.ENACTPHYS_EXAMPLES.groups.filter(g => !['extra-basketball', 'joint-collision', 'joint-drop'].includes(g.id));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const states = new Map();
 const containers = {fine:'fine-groups',joint:'joint-groups',featured:'featured-groups',compositional:'composition-groups',appendix:'appendix-groups',additional:'additional-groups'};
@@ -185,7 +185,8 @@ const analysisObserver=new IntersectionObserver(entries=>{
   data.onload=()=>{const view=document.createElement('script');view.src='states.js?v=5';document.head.append(view);};
   document.head.append(data);
 },{rootMargin:'600px'});
-analysisObserver.observe(document.getElementById('states'));
+const stateSection=document.getElementById('states');
+if(stateSection)analysisObserver.observe(stateSection);
 
 // Keep the section navigation aligned with the content currently in view.
 const sectionLinks=[...document.querySelectorAll('.site-nav nav a')];
