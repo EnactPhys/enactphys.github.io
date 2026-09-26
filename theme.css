@@ -155,3 +155,9 @@ footer a { color: var(--blue); }
   .inference-note { display: block; padding: 15px; }
   .inference-note p { margin-top: 7px; font-size: 12px; }
 }
+
+/* Precomposed parameter matrices keep all cells on one playback timeline. */
+.clips.one{grid-template-columns:minmax(0,1fr)}
+.clips.one video{aspect-ratio:auto;height:auto;object-fit:contain;background:#fff}
+.matrix-caption{font-size:14px;line-height:1.7;color:var(--muted,#687891);margin:10px 0 16px}
+.settings pre{max-height:360px;overflow:auto}

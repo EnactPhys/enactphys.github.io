@@ -111,19 +111,19 @@ function mount(g){
   const replay=document.createElement('button');replay.textContent='↻ Replay';replay.setAttribute('aria-label',`Replay ${g.title}`);
   const toggle=document.createElement('button');toggle.textContent=reduceMotion?'Play':'Pause';toggle.setAttribute('aria-label',`Play or pause ${g.title}`);
   controls.append(replay,toggle);head.append(title,controls);
-  const grid=document.createElement('div');grid.className='clips'+((g.clips.length===2||g.clips.length===4)?' two':g.clips.length===5?' five':'');
+  const grid=document.createElement('div');grid.className='clips'+(g.clips.length===1?' one':'')+((g.clips.length===2||g.clips.length===4)?' two':g.clips.length===5?' five':'');
   const videos=g.clips.map(c=>{
     const fig=document.createElement('figure');fig.className='clip';
-    const v=document.createElement('video');v.dataset.src=window.enactphysMedia(c.src);v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
+    const v=document.createElement('video');v.dataset.src=c.preview||window.enactphysMedia(c.src);v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
     const cap=document.createElement('figcaption');const level=document.createElement('span');level.textContent=c.label;const value=document.createElement('span');value.textContent=parameterLabel(c);cap.append(level,value);
     fig.append(v,cap);grid.append(fig);return v;
   });
   const status=document.createElement('p');status.className='status';status.setAttribute('role','status');
   const details=document.createElement('details');details.className='settings';const summary=document.createElement('summary');summary.textContent='Prompt & settings';const info=document.createElement('pre');
-  info.textContent=g.clips.map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');const originals=document.createElement('p');originals.className='original-links';originals.append('Original videos: ');
-  g.clips.forEach((c,i)=>{if(i)originals.append(' · ');const a=document.createElement('a');a.href=c.src;a.textContent=c.label;a.target='_blank';a.rel='noopener';originals.append(a);});
+  info.textContent=(g.originals||g.clips).map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');const originals=document.createElement('p');originals.className='original-links';originals.append('Original videos: ');
+  (g.originals||g.clips).forEach((c,i)=>{if(i)originals.append(' · ');const a=document.createElement('a');a.href=c.src;a.textContent=c.label;a.target='_blank';a.rel='noopener';originals.append(a);});
   details.append(summary,info,originals);
-  el.append(head,grid,status,details);document.getElementById(containers[g.section]).append(el);
+  el.append(head,grid);if(g.caption){const caption=document.createElement('p');caption.className='matrix-caption';caption.textContent=g.caption;el.append(caption);}el.append(status,details);document.getElementById(containers[g.section]).append(el);
   videos.forEach(v=>window.enactphysPoster(v));
   const s={el,grid,videos,status,toggle,token:0,paused:reduceMotion,visible:false,mode:'idle'};states.set(el,s);
   const update=()=>{const playing=(s.mode==='playing'||s.mode==='loading')&&!s.paused;toggle.textContent=playing?'Pause':'Play';toggle.setAttribute('aria-pressed',String(playing));};s.update=update;update();
