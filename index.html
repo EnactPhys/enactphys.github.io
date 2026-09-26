@@ -13,7 +13,7 @@
 <body>
 <a class="skip" href="#showcase">Skip to results</a>
 <div id="top"></div>
-<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#showcase">Generalization</a><a href="#approach">Method</a><a href="#fine">Parameter Sweeps</a><a href="#joint">Joint Control</a><a href="#comparison">Comparisons</a><a href="#gallery">Visual Gallery</a></nav></div></div>
+<div class="site-nav"><div class="nav-inner"><a class="nav-brand" href="#top"><span class="brand-symbol" aria-hidden="true">E</span>EnactPhys</a><nav aria-label="Page sections"><a href="#showcase">Generalization</a><a href="#approach">Method</a><a href="#gallery">Visual Gallery</a><a href="#fine">Parameter Sweeps</a><a href="#joint">Joint Control</a><a href="#comparison">Comparisons</a></nav></div></div>
 
 <header class="paper-header">
 <h1><span>EnactPhys</span><span class="title-description">Executing Evolving Physical Processes<br class="wide"> in Video Diffusion</span></h1>
@@ -40,6 +40,13 @@
 <article><h3>Object State Evolution</h3><p>Force, gravity, and mass guide temporal updates. Friction and restitution guide inter-object interactions.</p></article>
 <article><h3>Video–State Exchange</h3><p>The Reader updates states from video features. The Writer sends the evolved states back to guide video denoising.</p></article>
 </div></section>
+<section id="gallery" class="section">
+
+<h2>Visual Gallery</h2>
+
+<div class="filters" role="group" aria-label="Filter scenes"><button data-filter="all" aria-pressed="true">All scenes</button><button data-filter="slide" aria-pressed="false">Sliding</button><button data-filter="push" aria-pressed="false">Pushing</button><button data-filter="drop" aria-pressed="false">Falling</button><button data-filter="projectile" aria-pressed="false">Projectile motion</button><button data-filter="collision" aria-pressed="false">Collisions</button></div>
+<div id="appendix-groups"></div>
+</section>
 <section id="fine" class="section">
 <h2>Parameter Sweeps</h2><div id="fine-groups"></div>
 
@@ -66,13 +73,6 @@
 <div class="comparison-toolbar"><button id="comparison-replay" type="button">↻ Replay</button><button id="comparison-still" type="button">View comparison frame</button><a id="comparison-download" href="assets/comparison/mu_original_speed_comparison.mp4" target="_blank" rel="noopener">Open video ↗</a></div>
 </div>
 <details class="comparison-figure"><summary>Comparison details &amp; figure</summary><p>Rows: EnactPhys, Phantom, ControlNet, and Text-only. Columns: five parameter settings. Full 49-frame sequences at their recorded 16 fps.</p><p>Markers indicate observed positions at a shared time within each panel. Connecting lines guide comparisons across settings; they are not temporal trajectories. The force panel uses a shared enlarged crop. Force and mass include closely spaced responses.</p><a href="assets/comparison/comparison_figure.png" target="_blank" rel="noopener"><img src="assets/comparison/comparison_figure.png" loading="lazy" alt="Five-parameter, five-level comparison of EnactPhys and three baselines"></a></details>
-</section>
-<section id="gallery" class="section">
-
-<h2>Visual Gallery</h2>
-
-<div class="filters" role="group" aria-label="Filter scenes"><button data-filter="all" aria-pressed="true">All scenes</button><button data-filter="slide" aria-pressed="false">Sliding</button><button data-filter="push" aria-pressed="false">Pushing</button><button data-filter="drop" aria-pressed="false">Falling</button><button data-filter="projectile" aria-pressed="false">Projectile motion</button><button data-filter="collision" aria-pressed="false">Collisions</button></div>
-<div id="appendix-groups"></div>
 </section>
 </main>
 <footer><a href="#top">EnactPhys ↑</a><span>Anonymous research project</span></footer>
