@@ -120,8 +120,23 @@ function mount(g){
   });
   const status=document.createElement('p');status.className='status';status.setAttribute('role','status');
   const details=document.createElement('details');details.className='settings';const summary=document.createElement('summary');summary.textContent='Prompt & settings';const info=document.createElement('pre');
-  info.textContent=(g.originals||g.clips).map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');const originals=document.createElement('p');originals.className='original-links';originals.append('Original videos: ');
-  (g.originals||g.clips).forEach((c,i)=>{if(i)originals.append(' · ');const a=document.createElement('a');a.href=c.src;a.textContent=c.label;a.target='_blank';a.rel='noopener';originals.append(a);});
+  const originals=document.createElement('p');originals.className='original-links';
+  let settingsLoaded=false,settingsLoading=false;
+  details.addEventListener('toggle',async()=>{
+    if(!details.open||settingsLoaded||settingsLoading)return;
+    settingsLoading=true;info.textContent='Loading settings…';
+    try{
+      const response=await fetch(g.settings);
+      if(!response.ok)throw new Error('Settings unavailable');
+      const full=await response.json();
+      const clips=full.originals||full.clips;
+      info.textContent=clips.map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');
+      originals.replaceChildren('Original videos: ');
+      clips.forEach((c,i)=>{if(i)originals.append(' · ');const a=document.createElement('a');a.href=c.src;a.textContent=c.label;a.target='_blank';a.rel='noopener';originals.append(a);});
+      settingsLoaded=true;
+    }catch(error){info.textContent='Settings could not load. Close and reopen to retry, or download Example settings at the bottom of this page.';}
+    finally{settingsLoading=false;}
+  });
   details.append(summary,info,originals);
   el.append(head,grid);if(g.caption){const caption=document.createElement('p');caption.className='matrix-caption';caption.textContent=g.caption;el.append(caption);}el.append(status,details);document.getElementById(containers[g.section]).append(el);
   videos.forEach(v=>window.enactphysPoster(v));
@@ -171,3 +186,18 @@ const analysisObserver=new IntersectionObserver(entries=>{
   document.head.append(data);
 },{rootMargin:'600px'});
 analysisObserver.observe(document.getElementById('states'));
+
+// Keep the section navigation aligned with the content currently in view.
+const sectionLinks=[...document.querySelectorAll('.site-nav nav a')];
+let navigationFrame=0;
+function updateSectionNavigation(){
+  navigationFrame=0;
+  const sections=[...document.querySelectorAll('main > section[id]')];
+  const current=sections.filter(section=>section.getBoundingClientRect().top<180).at(-1);
+  for(const link of sectionLinks){
+    if(current&&link.hash===`#${current.id}`)link.setAttribute('aria-current','location');
+    else link.removeAttribute('aria-current');
+  }
+}
+addEventListener('scroll',()=>{if(!navigationFrame)navigationFrame=requestAnimationFrame(updateSectionNavigation);},{passive:true});
+updateSectionNavigation();
