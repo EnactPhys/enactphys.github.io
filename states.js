@@ -3,12 +3,12 @@ for (const item of window.ENACTPHYS_STATES) {
   const panel=document.createElement('article');panel.className='state-panel';
   const h=document.createElement('h3');h.textContent=item.kind==='embedding'?'Additional state analysis · t-SNE':item.title;
   const layout=document.createElement('div');layout.className='state-layout';
-  const v=document.createElement('video');v.dataset.src=item.src;v.dataset.poster=item.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.controls=true;v.preload='none';v.setAttribute('aria-label',item.title);
+  const v=document.createElement('video');v.dataset.src=window.enactphysMedia(item.src);v.dataset.poster=item.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.controls=true;v.preload='none';v.setAttribute('aria-label',item.title);
   const graph=document.createElement('div');graph.className='state-graph';const canvas=document.createElement('canvas');canvas.width=850;canvas.height=290;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',item.kind==='embedding'?'Twelve saved t-SNE coordinates, with the state nearest the current video frame highlighted.':'All 512 saved object-state components across video time.');
   const label=document.createElement('p');label.className='state-time';graph.append(canvas,label);layout.append(v,graph);
   const detail=document.createElement('details');detail.className='settings';const summary=document.createElement('summary');summary.textContent='Visualization details';const p=document.createElement('p');
   p.textContent=item.kind==='embedding'?'A selected historical example. All 12 saved coordinates are shown; the embedding is fixed during playback. Full 512D states; t-SNE perplexity 3, random seed 0. Coordinates are reused without refitting. Distances in this plot are not physical distances.':'All 512 components from one object are shown at the saved temporal slots. The display uses the paper’s fixed reference centering, scaling, feature orientation/order, and tanh(x/2). Lines join saved samples. The vertical line indicates the current video time.';
-  detail.append(summary,p);panel.append(h,layout,detail);document.getElementById('state-panels').append(panel);window.enactphysPoster(v);
+  const original=document.createElement('a');original.href=item.src;original.textContent='Open original video ↗';original.target='_blank';original.rel='noopener';detail.append(summary,p,original);panel.append(h,layout,detail);document.getElementById('state-panels').append(panel);window.enactphysPoster(v);
   const ctx=canvas.getContext('2d');let last=-1,background=null;
   function draw(){
     const frame=Math.min(item.frames-1,Math.round(v.currentTime*item.fps));if(last===frame)return;last=frame;

@@ -1,4 +1,5 @@
 'use strict';
+window.enactphysMedia = src => src.replace(/^assets\/(paper|states)\//, 'assets/stream/$1/');
 const groups = window.ENACTPHYS_EXAMPLES.groups;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const states = new Map();
@@ -15,11 +16,10 @@ const posterObserver=new IntersectionObserver(entries=>{
 },{rootMargin:'180px'});
 window.enactphysPoster=v=>posterObserver.observe(v);
 let selectionTimer;
-function pause(s,release=false){
+function pause(s){
   s.token++;s.controller?.abort();s.mode='idle';
   s.videos.forEach(v=>{
     v.pause();
-    if(release&&v.getAttribute('src')&&v.readyState<4){v.removeAttribute('src');v.load();}
   });
   s.status.textContent='';s.update();
 }
@@ -32,25 +32,40 @@ function selectVisible(){
   for(const s of states.values()){
     const visible=!document.hidden&&visibleFraction(s)>.1;
     const entered=visible&&!s.visible;s.visible=visible;
-    if(!visible){if(s.mode==='loading'||s.mode==='playing')pause(s,true);}
+    if(!visible){if(s.mode==='loading'||s.mode==='playing')pause(s);}
     else if(!s.paused&&(entered||s.mode==='idle'))play(s);
   }
+  warmNext();
 }
-function scheduleSelection(){clearTimeout(selectionTimer);selectionTimer=setTimeout(selectVisible,80);}
+function scheduleSelection(){clearTimeout(selectionTimer);selectionTimer=setTimeout(selectVisible,60);}
 function prepare(s){
   if(s.el.hidden||document.hidden)return;
   s.videos.forEach(v=>{if(!v.getAttribute('src')){v.preload='auto';v.src=v.dataset.src;v.load();}});
 }
-const preparation=new IntersectionObserver(entries=>{
-  for(const e of entries){const s=states.get(e.target);if(e.isIntersecting)prepare(s);else if(!s.visible&&s.mode==='idle')pause(s,true);}
-},{rootMargin:'180px'});
+// Give visible comparisons the bandwidth first; warm one upcoming row once
+// they have buffered, and keep completed/in-flight downloads when scrolling.
+function warmNext(){
+  if(document.hidden)return;
+  const visible=[...states.values()].filter(s=>s.visible);
+  if(visible.some(s=>s.videos.some(v=>!v.buffered.length||v.buffered.end(v.buffered.length-1)<v.duration-.03)))return;
+  const next=[...states.values()].filter(s=>!s.el.hidden&&!s.visible&&s.grid.getBoundingClientRect().top>=innerHeight)
+    .sort((a,b)=>a.grid.getBoundingClientRect().top-b.grid.getBoundingClientRect().top)[0];
+  if(next&&next.grid.getBoundingClientRect().top<innerHeight+800)prepare(next);
+}
+function hasPlaybackBuffer(v){
+  if(v.readyState<3)return false;
+  for(let i=0;i<v.buffered.length;i++){
+    if(v.buffered.start(i)<=v.currentTime+.03&&v.buffered.end(i)-v.currentTime>=Math.min(1,v.duration-v.currentTime)-.02)return true;
+  }
+  return false;
+}
 function mediaReady(v,signal){
   if(signal.aborted)return Promise.reject(new DOMException('Cancelled','AbortError'));
-  if(v.readyState>=4)return Promise.resolve();
+  if(hasPlaybackBuffer(v))return Promise.resolve();
   return new Promise((resolve,reject)=>{
-    const events=['canplaythrough','progress','loadeddata'];
+    const events=['canplay','canplaythrough','progress','loadeddata'];
     const finish=err=>{clearTimeout(timer);events.forEach(e=>v.removeEventListener(e,check));v.removeEventListener('error',fail);signal.removeEventListener('abort',cancel);err?reject(err):resolve();};
-    const check=()=>{if(v.readyState>=4)finish();};
+    const check=()=>{if(hasPlaybackBuffer(v))finish();};
     const fail=()=>finish(new Error('Video unavailable'));
     const cancel=()=>finish(new DOMException('Cancelled','AbortError'));
     const timer=setTimeout(()=>finish(new Error('Loading timed out')),60000);
@@ -81,7 +96,7 @@ async function play(s,restart=false){
     if(token!==s.token||s.el.hidden||document.hidden)return;
     await Promise.all(s.videos.map(v=>v.play()));
     if(token!==s.token)return;
-    s.mode='playing';s.status.textContent='';s.update();
+    s.mode='playing';s.status.textContent='';s.update();warmNext();
   }catch(e){
     if(token!==s.token)return;
     pause(s);s.mode='error';
@@ -99,13 +114,15 @@ function mount(g){
   const grid=document.createElement('div');grid.className='clips'+((g.clips.length===2||g.clips.length===4)?' two':g.clips.length===5?' five':'');
   const videos=g.clips.map(c=>{
     const fig=document.createElement('figure');fig.className='clip';
-    const v=document.createElement('video');v.dataset.src=c.src;v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
+    const v=document.createElement('video');v.dataset.src=window.enactphysMedia(c.src);v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
     const cap=document.createElement('figcaption');const level=document.createElement('span');level.textContent=c.label;const value=document.createElement('span');value.textContent=parameterLabel(c);cap.append(level,value);
     fig.append(v,cap);grid.append(fig);return v;
   });
   const status=document.createElement('p');status.className='status';status.setAttribute('role','status');
   const details=document.createElement('details');details.className='settings';const summary=document.createElement('summary');summary.textContent='Prompt & settings';const info=document.createElement('pre');
-  info.textContent=g.clips.map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');details.append(summary,info);
+  info.textContent=g.clips.map(c=>`${c.label}\n${c.prompt||'Prompt not recorded in the available receipt.'}\nSeed ${c.seed??'not recorded'} · ${c.frames} frames · ${c.fps} fps · guidance ${c.cfg_scale??'not recorded'}\n${JSON.stringify(c.parameters,null,2)}`).join('\n\n');const originals=document.createElement('p');originals.className='original-links';originals.append('Original videos: ');
+  g.clips.forEach((c,i)=>{if(i)originals.append(' · ');const a=document.createElement('a');a.href=c.src;a.textContent=c.label;a.target='_blank';a.rel='noopener';originals.append(a);});
+  details.append(summary,info,originals);
   el.append(head,grid,status,details);document.getElementById(containers[g.section]).append(el);
   videos.forEach(v=>window.enactphysPoster(v));
   const s={el,grid,videos,status,toggle,token:0,paused:reduceMotion,visible:false,mode:'idle'};states.set(el,s);
@@ -113,6 +130,8 @@ function mount(g){
   replay.addEventListener('click',()=>{s.paused=false;update();play(s,true);});
   toggle.addEventListener('click',()=>{s.paused=s.mode==='playing'||s.mode==='loading';s.paused?pause(s):play(s);update();});
   videos.forEach(v=>{
+    v.addEventListener('canplaythrough',warmNext);
+    v.addEventListener('progress',warmNext);
     v.addEventListener('play',()=>{
       if(s.mode==='idle'||s.mode==='error'){s.paused=false;play(s);}
     });
@@ -123,18 +142,18 @@ function mount(g){
   });
   return el;
 }
-groups.forEach(g=>preparation.observe(mount(g)));
+groups.forEach(mount);
 addEventListener('scroll',scheduleSelection,{passive:true});
 addEventListener('resize',scheduleSelection);
 scheduleSelection();
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){states.forEach(s=>{s.visible=false;pause(s,true);});}
+  if(document.hidden){states.forEach(s=>{s.visible=false;pause(s);});}
   else scheduleSelection();
 });
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   groups.filter(g=>g.section==='appendix').forEach(g=>{
-    const el=document.getElementById(g.id);el.hidden=button.dataset.filter!=='all'&&!g.id.startsWith(button.dataset.filter+'_');if(el.hidden)pause(states.get(el),true);
+    const el=document.getElementById(g.id);el.hidden=button.dataset.filter!=='all'&&!g.id.startsWith(button.dataset.filter+'_');if(el.hidden)pause(states.get(el));
   });
   scheduleSelection();
 }));
