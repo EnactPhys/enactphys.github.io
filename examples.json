@@ -3223,9 +3223,106 @@
       ]
     },
     {
+      "id": "fine-g",
+      "title": "Gravity · conservatory ball",
+      "section": "fine",
+      "clips": [
+        {
+          "id": "teaser-020",
+          "label": "2.45",
+          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
+          "seed": "42",
+          "cfg_scale": 1.2,
+          "fps": 24.0,
+          "frames": 49,
+          "width": 768,
+          "height": 448,
+          "src": "assets/paper/paper-027.mp4",
+          "poster": "assets/paper/paper-027.jpg",
+          "parameters": {
+            "axis": "g",
+            "value": 2.45,
+            "e": 0.1
+          }
+        },
+        {
+          "id": "teaser-021",
+          "label": "6.125",
+          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
+          "seed": "42",
+          "cfg_scale": 1.2,
+          "fps": 24.0,
+          "frames": 49,
+          "width": 768,
+          "height": 448,
+          "src": "assets/paper/paper-028.mp4",
+          "poster": "assets/paper/paper-028.jpg",
+          "parameters": {
+            "axis": "g",
+            "value": 6.125,
+            "e": 0.1
+          }
+        },
+        {
+          "id": "teaser-022",
+          "label": "9.8",
+          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
+          "seed": "42",
+          "cfg_scale": 1.2,
+          "fps": 24.0,
+          "frames": 49,
+          "width": 768,
+          "height": 448,
+          "src": "assets/paper/teaser-022.mp4",
+          "poster": "assets/paper/teaser-022.jpg",
+          "parameters": {
+            "axis": "g",
+            "value": 9.8,
+            "e": 0.1
+          }
+        },
+        {
+          "id": "teaser-023",
+          "label": "13.475",
+          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
+          "seed": "42",
+          "cfg_scale": 1.2,
+          "fps": 24.0,
+          "frames": 49,
+          "width": 768,
+          "height": 448,
+          "src": "assets/paper/teaser-023.mp4",
+          "poster": "assets/paper/teaser-023.jpg",
+          "parameters": {
+            "axis": "g",
+            "value": 13.475,
+            "e": 0.1
+          }
+        },
+        {
+          "id": "teaser-024",
+          "label": "17.15",
+          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
+          "seed": "42",
+          "cfg_scale": 1.2,
+          "fps": 24.0,
+          "frames": 49,
+          "width": 768,
+          "height": 448,
+          "src": "assets/paper/paper-029.mp4",
+          "poster": "assets/paper/paper-029.jpg",
+          "parameters": {
+            "axis": "g",
+            "value": 17.15,
+            "e": 0.1
+          }
+        }
+      ]
+    },
+    {
       "id": "extra-marbles",
       "title": "Applied force",
-      "section": "additional",
+      "section": "fine",
       "clips": [
         {
           "id": "paper-048",
@@ -3289,7 +3386,7 @@
     {
       "id": "extra-tennis",
       "title": "Restitution",
-      "section": "additional",
+      "section": "fine",
       "clips": [
         {
           "id": "paper-051",
@@ -3608,103 +3705,6 @@
           "parameters": {
             "g_ms2": 19.6,
             "mu": 0.36
-          }
-        }
-      ]
-    },
-    {
-      "id": "fine-g",
-      "title": "Gravity · conservatory ball",
-      "section": "fine",
-      "clips": [
-        {
-          "id": "teaser-020",
-          "label": "2.45",
-          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
-          "seed": "42",
-          "cfg_scale": 1.2,
-          "fps": 24.0,
-          "frames": 49,
-          "width": 768,
-          "height": 448,
-          "src": "assets/paper/paper-027.mp4",
-          "poster": "assets/paper/paper-027.jpg",
-          "parameters": {
-            "axis": "g",
-            "value": 2.45,
-            "e": 0.1
-          }
-        },
-        {
-          "id": "teaser-021",
-          "label": "6.125",
-          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
-          "seed": "42",
-          "cfg_scale": 1.2,
-          "fps": 24.0,
-          "frames": 49,
-          "width": 768,
-          "height": 448,
-          "src": "assets/paper/paper-028.mp4",
-          "poster": "assets/paper/paper-028.jpg",
-          "parameters": {
-            "axis": "g",
-            "value": 6.125,
-            "e": 0.1
-          }
-        },
-        {
-          "id": "teaser-022",
-          "label": "9.8",
-          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
-          "seed": "42",
-          "cfg_scale": 1.2,
-          "fps": 24.0,
-          "frames": 49,
-          "width": 768,
-          "height": 448,
-          "src": "assets/paper/teaser-022.mp4",
-          "poster": "assets/paper/teaser-022.jpg",
-          "parameters": {
-            "axis": "g",
-            "value": 9.8,
-            "e": 0.1
-          }
-        },
-        {
-          "id": "teaser-023",
-          "label": "13.475",
-          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
-          "seed": "42",
-          "cfg_scale": 1.2,
-          "fps": 24.0,
-          "frames": 49,
-          "width": 768,
-          "height": 448,
-          "src": "assets/paper/teaser-023.mp4",
-          "poster": "assets/paper/teaser-023.jpg",
-          "parameters": {
-            "axis": "g",
-            "value": 13.475,
-            "e": 0.1
-          }
-        },
-        {
-          "id": "teaser-024",
-          "label": "17.15",
-          "prompt": "One red rubber ball drops onto the polished terrazzo floor inside a sunny conservatory and bounces. The camera stays fixed.",
-          "seed": "42",
-          "cfg_scale": 1.2,
-          "fps": 24.0,
-          "frames": 49,
-          "width": 768,
-          "height": 448,
-          "src": "assets/paper/paper-029.mp4",
-          "poster": "assets/paper/paper-029.jpg",
-          "parameters": {
-            "axis": "g",
-            "value": 17.15,
-            "e": 0.1
           }
         }
       ]
