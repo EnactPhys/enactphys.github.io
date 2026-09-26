@@ -1,0 +1,29 @@
+{
+  "id": "human-slide-mu",
+  "title": "Friction · playground slide",
+  "section": "featured",
+  "clips": [
+    {
+      "id": "human-slide-mu",
+      "src": "assets/curated/playground-friction.mp4",
+      "label": "Low → Mid → High",
+      "width": 1152,
+      "height": 248,
+      "frames": 49,
+      "fps": 24,
+      "seed": 42,
+      "cfg_scale": 1.2,
+      "prompt": "A complete child with visible head, body and feet sits feet-first high on a yellow playground slide that descends from upper left to lower right. Gravity moves the child rightward down the slide. No hands are visible; the camera stays fixed.",
+      "parameters": {
+        "mu": [
+          0.2,
+          0.4,
+          0.6
+        ],
+        "g_normalized_fixed": 0.6
+      },
+      "layout": "Three synchronized conditions, from left to right."
+    }
+  ],
+  "settings": "assets/settings/human-slide-mu.json"
+}

@@ -14,7 +14,7 @@ function parameterLabel(c) {
 const posterObserver=new IntersectionObserver(entries=>{
   for(const e of entries)if(e.isIntersecting){const v=e.target;v.poster=v.dataset.poster;posterObserver.unobserve(v);}
 },{rootMargin:'180px'});
-window.enactphysPoster=v=>posterObserver.observe(v);
+window.enactphysPoster=v=>{if(v.dataset.poster)posterObserver.observe(v);};
 let selectionTimer;
 function pause(s){
   s.token++;s.controller?.abort();s.mode='idle';
@@ -114,7 +114,7 @@ function mount(g){
   const grid=document.createElement('div');grid.className='clips'+(g.clips.length===1?' one':'')+((g.clips.length===2||g.clips.length===4)?' two':g.clips.length===5?' five':'');
   const videos=g.clips.map(c=>{
     const fig=document.createElement('figure');fig.className='clip';
-    const v=document.createElement('video');v.dataset.src=c.preview||window.enactphysMedia(c.src);v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
+    const v=document.createElement('video');v.dataset.src=c.preview||window.enactphysMedia(c.src);if(c.poster)v.dataset.poster=c.poster;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='none';v.controls=true;v.setAttribute('aria-label',`${g.title}, ${c.label}`);
     const cap=document.createElement('figcaption');const level=document.createElement('span');level.textContent=c.label;const value=document.createElement('span');value.textContent=parameterLabel(c);cap.append(level,value);
     fig.append(v,cap);grid.append(fig);return v;
   });
