@@ -6,9 +6,9 @@
 <meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
 <title>EnactPhys — Executing Evolving Physical Processes in Video Diffusion</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="theme.css?v=2">
-<script defer src="examples.js"></script><script defer src="app.js?v=5"></script><script defer src="state_data.js"></script><script defer src="states.js?v=5"></script>
+<script defer src="examples.js"></script><script defer src="app.js?v=6"></script>
 <link rel="stylesheet" href="comparison.css?v=1">
-<script defer src="comparison.js?v=1"></script>
+<script defer src="comparison.js?v=2"></script>
 </head>
 <body>
 <a class="skip" href="#showcase">Skip to results</a>
@@ -38,7 +38,7 @@
 <p class="section-intro method-lead">EnactPhys adds an object-state branch to a pretrained video diffusion Transformer. Physical parameters guide how each object’s states evolve over time and interact with other objects; the updated states then guide video denoising.</p>
 <div class="method-summary"><span><strong>Video backbone</strong> Frozen Wan2.2-TI2V-5B</span><span><strong>Object-state branch</strong> Eight consecutive adapted blocks</span><span><strong>Physical controls</strong> Force · gravity · mass · friction · restitution</span></div>
 <figure class="paper-figure architecture-figure">
-<a href="assets/figures/architecture.png" target="_blank" rel="noopener" aria-label="Open the full-resolution EnactPhys architecture diagram"><img src="assets/figures/architecture.png" width="2600" height="1491" loading="lazy" decoding="async" alt="EnactPhys architecture: a Reader extracts object-specific video features, temporal attention evolves states conditioned on force, gravity and mass, gated messages model contact, restitution and friction, and a Writer returns updated states to video features."></a>
+<a href="assets/figures/architecture.png" target="_blank" rel="noopener" aria-label="Open the full-resolution EnactPhys architecture diagram"><img data-src="assets/figures/architecture.png" width="2600" height="1491" loading="lazy" decoding="async" alt="EnactPhys architecture: a Reader extracts object-specific video features, temporal attention evolves states conditioned on force, gravity and mass, gated messages model contact, restitution and friction, and a Writer returns updated states to video features."></a>
 <figcaption><span>Architecture overview from the paper.</span><a href="assets/figures/architecture.png" target="_blank" rel="noopener">View full resolution ↗</a></figcaption>
 </figure>
 <div class="method-grid">
@@ -51,7 +51,7 @@
 </section>
 <section id="fine" class="section">
 <p class="section-kicker">03 / Parameter sweeps</p><h2>Fine-grained physical control</h2><p class="section-intro">Change one physical parameter while keeping the scene fixed: a five-level gravity sweep, followed by force and restitution examples.</p><div id="fine-groups"></div>
-<details class="paper-overview"><summary>Paper overview: individual controls, joint controls, and object states</summary><figure class="paper-figure"><a href="assets/figures/overview.png" target="_blank" rel="noopener"><img src="assets/figures/overview.png" width="2200" height="1229" loading="lazy" decoding="async" alt="Paper overview showing five physical controls, paired parameter combinations, and object-state evolution alongside generated videos."></a><figcaption><span>Selected frames and object-state visualizations from the paper.</span><a href="assets/figures/overview.png" target="_blank" rel="noopener">View full resolution ↗</a></figcaption></figure></details>
+<details class="paper-overview"><summary>Paper overview: individual controls, joint controls, and object states</summary><figure class="paper-figure"><a href="assets/figures/overview.png" target="_blank" rel="noopener"><img data-src="assets/figures/overview.png" width="2200" height="1229" loading="lazy" decoding="async" alt="Paper overview showing five physical controls, paired parameter combinations, and object-state evolution alongside generated videos."></a><figcaption><span>Selected frames and object-state visualizations from the paper.</span><a href="assets/figures/overview.png" target="_blank" rel="noopener">View full resolution ↗</a></figcaption></figure></details>
 </section>
 <section id="composition" class="section tinted">
 <p class="section-kicker">04 / Composed events</p>
@@ -65,7 +65,7 @@
 <p class="section-intro">Compare EnactPhys, Phantom, ControlNet, and Text-only under matched scenes, requested parameter values, and seeds. Each method retains its benchmark inference settings.</p>
 <div class="comparison-tabs" role="group" aria-label="Select a physical parameter"></div>
 <div class="comparison-card"><h3 id="comparison-title">Friction μ</h3><p id="comparison-note">Compare motion along the ramp across five friction settings.</p>
-<video id="comparison-player" controls muted loop playsinline preload="none" poster="assets/comparison/mu_poster.jpg" aria-label="Synchronized five-level comparison of four models"></video>
+<video id="comparison-player" controls muted loop playsinline preload="none" data-poster="assets/comparison/mu_poster.jpg" aria-label="Synchronized five-level comparison of four models"></video>
 <div class="comparison-toolbar"><button id="comparison-replay" type="button">↻ Replay</button><button id="comparison-still" type="button">View comparison frame</button><a id="comparison-download" href="assets/comparison/mu_original_speed_comparison.mp4" target="_blank" rel="noopener">Open video ↗</a></div>
 <p class="comparison-caption">Rows: EnactPhys, Phantom, ControlNet, and Text-only. Columns: five parameter settings. Full 49-frame sequences at their recorded 16 fps.</p></div>
 <details class="comparison-figure"><summary>View the five-parameter comparison figure</summary><p>Markers indicate observed positions at a shared time within each panel. Connecting lines guide comparisons across settings; they are not temporal trajectories. The force panel uses a shared enlarged crop. Force and mass include closely spaced responses.</p><a href="assets/comparison/comparison_figure.png" target="_blank" rel="noopener"><img src="assets/comparison/comparison_figure.png" loading="lazy" alt="Five-parameter, five-level comparison of EnactPhys and three baselines"></a></details>

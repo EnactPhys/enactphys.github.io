@@ -157,3 +157,17 @@ document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListen
   });
   scheduleSelection();
 }));
+
+// Keep below-the-fold figures and analysis data off the first-video request path.
+const figureObserver=new IntersectionObserver(entries=>{
+  for(const e of entries)if(e.isIntersecting){const img=e.target;img.loading='eager';img.src=img.dataset.src;figureObserver.unobserve(img);}
+},{rootMargin:'400px'});
+document.querySelectorAll('img[data-src]').forEach(img=>figureObserver.observe(img));
+const analysisObserver=new IntersectionObserver(entries=>{
+  if(!entries.some(e=>e.isIntersecting))return;
+  analysisObserver.disconnect();
+  const data=document.createElement('script');data.src='state_data.js';
+  data.onload=()=>{const view=document.createElement('script');view.src='states.js?v=5';document.head.append(view);};
+  document.head.append(data);
+},{rootMargin:'600px'});
+analysisObserver.observe(document.getElementById('states'));
