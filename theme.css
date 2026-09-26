@@ -242,3 +242,67 @@ h1 .title-description { margin-top:9px; font-size:clamp(21px,2.1vw,28px); }
 .showcase { padding-top:34px; }
 .showcase .section-intro { margin-bottom:24px; }
 @media(max-width:600px) { .paper-header{padding:25px 17px;} .tagline{max-width:310px;} .showcase{padding-top:30px;} }
+/* Minimal academic layout: method, three components, categorized demonstrations. */
+body { font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; color:#162035; }
+.paper-header { background:#fff; color:#15223c; padding:42px 24px 32px; }
+h1 { color:#15223c; max-width:1040px; }
+h1 > span:first-child { color:#2865d5; font-size:clamp(42px,4.3vw,60px); font-weight:750; }
+h1 .title-description { color:#18243a; font-weight:600; font-size:clamp(24px,2.8vw,38px); line-height:1.18; margin-top:13px; }
+.authors { color:#24334a; font-size:16px; margin:22px 0; }
+.resource-buttons :is(button,a),.resource-buttons :is(button,a):first-child { background:#235bd2; border:1px solid #235bd2; color:#fff; font-weight:600; font-size:15px; padding:10px 23px; border-radius:24px; box-shadow:none; }
+.resource-buttons a:hover { background:#1948ae; }
+.site-nav { box-shadow:none; border-bottom:1px solid #edf0f5; }
+nav a { color:#26344c; font-size:13px; }
+.section { padding:40px 0; border-bottom:0; }
+h2 { color:#15243b; font-size:clamp(28px,3vw,38px); font-weight:700; margin:0 0 28px; }
+h2::after { display:none; }
+.approach { padding-top:18px; }
+.paper-figure,.architecture-figure { padding:0; border:0; border-radius:0; }
+.method-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:28px; }
+.method-grid article { padding:23px; background:#f5f8fe; border:0; border-radius:12px; text-align:center; }
+.method-grid h3 { color:#2055b9; font-size:20px; line-height:1.3; margin:0 0 12px; }
+.method-grid p { color:#26354e; font-size:16px; line-height:1.6; }
+.tinted { margin:0; padding:40px 0; border:0; background:#fff; }
+.group { border:0; box-shadow:none; padding:0; margin:0; border-radius:0; }
+.group-head { margin:0 0 14px; }
+.group h3 { color:#253852; font-size:20px; font-weight:600; }
+.group-controls button { font-size:13px; color:#244575; }
+.clip figcaption { font-size:16px; }
+.clip figcaption span:first-child { color:#183866; font-weight:600; }
+.clip figcaption span:last-child { color:#34496b; font-size:14px; }
+.settings summary { font-size:14px; color:#234571; }
+.settings { border:0; margin-top:9px; }
+.matrix-caption { color:#233951; font-size:15px; margin:12px 0; }
+.scene-selector { display:flex; gap:12px; align-items:center; justify-content:center; margin:0 auto 23px; }
+.scene-selector button { width:39px; height:39px; background:#edf3ff; color:#235cc8; border:0; border-radius:50%; font-size:21px; }
+.scene-selector button:hover { background:#dce8ff; }
+.scene-selector button:disabled { opacity:.35; cursor:default; }
+.scene-selector select { font:600 15px/1.4 inherit; font-family:inherit; font-size:15px; font-weight:600; color:#1d3a69; padding:9px 30px 9px 14px; border:1px solid #dbe4f3; border-radius:7px; background:#fff; max-width:65%; }
+.scene-count { font-size:14px; color:#2b4162; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.selection-note,footer,summary { color:#344965; font-size:14px; }
+.comparison-caption,#comparison-note,.comparison-figure p { font-size:15px; color:#334a6b; }
+.comparison-card { box-shadow:none; }
+.filters button { font-size:14px; color:#253e66; }
+.state-panel { box-shadow:none; border:0; padding:0; margin:28px 0; }
+.state-panel h3 { font-size:20px; }
+.state-time,.state-panel details p { color:#2e4668; font-size:14px; }
+@media(max-width:600px) {
+ .paper-header { padding:28px 18px; }
+ h1 .title-description { font-size:25px; line-height:1.25; }
+ .authors { margin:18px 0; font-size:15px; }
+ .resource-buttons :is(button,a),.resource-buttons :is(button,a):first-child { font-size:14px; padding:9px 17px; }
+ .section,.tinted { padding:28px 0; }
+ .approach { padding-top:8px; }
+ .method-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+ .method-grid article { padding:20px; }
+ .method-grid h3 { font-size:20px; }
+ .method-grid p { font-size:15px; }
+ .group h3 { font-size:16px; }
+ .clip figcaption { font-size:13px; }
+ .clip figcaption span:last-child { font-size:12px; }
+ .scene-selector { gap:7px; }
+ .scene-selector select { max-width:62%; font-size:13px; padding-left:9px; }
+ .scene-selector button { width:30px; height:30px; font-size:18px; }
+ .scene-count { font-size:12px; }
+ .group-controls button { font-size:11px; padding:4px 7px; }
+}
